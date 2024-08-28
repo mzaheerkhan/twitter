@@ -41,6 +41,7 @@ export const Post = ({ post }) => {
           width={500}
           height={500}
           className="rounded-2xl mr-2"
+          alt="post-image"
         />
         {/* icons */}
         <div className="flex items-center justify-between text-gray-500 p-2">
