@@ -1,3 +1,4 @@
+import Moment from "react-moment";
 import Image from "next/image";
 import {
   ChatBubbleOvalLeftEllipsisIcon,
@@ -12,7 +13,7 @@ export const Post = ({ post }) => {
   return (
     <div className="flex p-3 cursor-pointer border-b border-gray-200">
       <Image
-        src={post.userImg}
+        src={post.data().userImg}
         width={50}
         height={50}
         alt="post-profile"
@@ -22,22 +23,24 @@ export const Post = ({ post }) => {
         <div className="flex items-center justify-between">
           <div className="flex space-x-1 items-center whitespace-nowrap">
             <h4 className="font-bold text-[15px] sm:text-[16px] hover:underline">
-              {post.name}
+              {post.data().name}
             </h4>
-            <span className="text-sm sm:text-[15px]">@{post.userName}</span>
+            <span className="text-sm sm:text-[15px]">
+              @{post.data().username} -
+            </span>
             <span className="text-sm sm:text-[15px] hover:underline">
-              - {post.timeStamp}
+              <Moment fromNow>{post?.timestamp?.toDate()}</Moment>
             </span>
           </div>
           <EllipsisHorizontalIcon className="h-10 hoverEffect w-10 hover:bg-sky-100 hover:text-sky-500 p-2" />
         </div>
         {/* post text */}
         <p className="text-gray-800 text-[15px] sm:text-[16px] mb-2">
-          {post.text}
+          {post.data().text}
         </p>
         {/* post img */}
         <Image
-          src={post.img}
+          src={post.data().image}
           width={500}
           height={500}
           className="rounded-2xl mr-2"

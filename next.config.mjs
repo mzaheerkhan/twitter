@@ -9,6 +9,7 @@ const nextConfig = {
       "cdn.cms-twdigitalassets.com",
       "cms-twdigitalassets.com",
       "lh3.googleusercontent.com",
+      "firebasestorage.googleapis.com",
     ],
   },
 };

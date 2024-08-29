@@ -85,7 +85,7 @@ export const Input = () => {
               <div className="relative">
                 <XMarkIcon
                   onClick={() => setSelectedFile(null)}
-                  className="h-7 text-black absolute cursor-pointer shadow-md shadow-white rounded-full"
+                  className="h-7 text-black absolute cursor-pointer shadow-md border border-white m-1 rounded-full"
                 />
                 <img
                   src={selectedFile}
