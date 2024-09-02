@@ -20,10 +20,13 @@ import { db, storage } from "../../../firebase";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { deleteObject, ref } from "firebase/storage";
+import { useRecoilState } from "recoil";
+import { modelState } from "../../../atom/modalState";
 
 export const Post = ({ post }) => {
   const { data: session } = useSession();
 
+  const [open, setOpen] = useRecoilState(modelState);
   const [likes, setLikes] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
 
@@ -106,7 +109,10 @@ export const Post = ({ post }) => {
 
         {/* icons */}
         <div className="flex items-center justify-between text-gray-500 p-2">
-          <ChatBubbleOvalLeftEllipsisIcon className="h-9 w-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" />
+          <ChatBubbleOvalLeftEllipsisIcon
+            onClick={() => setOpen(!open)}
+            className="h-9 w-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100  "
+          />
           {session?.user.uid === post?.data().id && (
             <TrashIcon
               onClick={deletePost}

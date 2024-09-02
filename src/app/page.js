@@ -1,6 +1,7 @@
 import { Sidebar } from "./compnents/Sidebar";
 import { Feed } from "./compnents/Feed";
 import { Widgets } from "./compnents/Widgets";
+import { CommentModal } from "./compnents/CommentModal";
 
 export default async function Home() {
   const newsResults = await fetch(
@@ -25,6 +26,9 @@ export default async function Home() {
         newsResults={newsResults.articles}
         randomUsers={randomUsers.results}
       />
+
+      {/* Modal*/}
+      <CommentModal />
     </main>
   );
 }
