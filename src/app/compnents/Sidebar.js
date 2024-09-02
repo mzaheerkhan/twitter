@@ -22,8 +22,8 @@ export const Sidebar = () => {
   return (
     <div className="hidden sm:flex flex-col p-2 xl:items-start fixed h-full xl:ml-24 ">
       {/* Twitter logo */}
-      <div className="hoverEffect  hover:bg-blue-100 xl:px-2 xl:ml-5">
-        <Image src={twitter} alt="Twitter Img" width={35} height={35} />
+      <div className="hoverEffect  hover:bg-blue-100 xl:px-2 xl:ml-2">
+        <Image src={twitter} alt="Twitter Img" width={32} height={32} />
       </div>
       {/* MenuItems */}
       <div className=" mt-4 mb-2.5 xl:items-start">
