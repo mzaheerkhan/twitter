@@ -3,6 +3,7 @@ import { SparklesIcon } from "@heroicons/react/24/outline";
 import { Input } from "./Input";
 import { Post } from "./Post";
 import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   collection,
   doc,
@@ -32,9 +33,19 @@ export const Feed = () => {
         </div>
       </div>
       <Input />
-      {posts.map((post) => (
-        <Post key={post.id} post={post} />
-      ))}
+      <AnimatePresence>
+        {posts.map((post) => (
+          <motion.div
+            key={post.id}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <Post key={post.id} post={post} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 };
