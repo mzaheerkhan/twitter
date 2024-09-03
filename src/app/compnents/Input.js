@@ -24,6 +24,9 @@ export const Input = () => {
   const { data: session } = useSession();
   const filePickerRef = useRef(null);
 
+
+ 
+
   const sendPost = async () => {
     if (loading) return;
     setLoading(true);
@@ -69,6 +72,7 @@ export const Input = () => {
             height={50}
             alt="profile-img"
             className="rounded-full w-11 h-11 cursor-pointer hover:brightness-95"
+           
           />
 
           <div className="w-full divide-y divide-gray-200">
@@ -90,6 +94,7 @@ export const Input = () => {
                 <img
                   src={selectedFile}
                   className={`${loading && "animate-pulse"}`}
+                
                 />
               </div>
             )}

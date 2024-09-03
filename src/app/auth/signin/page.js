@@ -14,7 +14,11 @@ export default function SignInPage() {
   }, []);
 
   if (!providers) {
-    return <p>Loading...</p>;
+    return (
+      <p className="flex items-center justify-center text-red-600 mt-24 text-lg font-bold">
+        Loading...........
+      </p>
+    );
   }
 
   return (

@@ -23,7 +23,7 @@ export const Sidebar = () => {
     <div className="hidden sm:flex flex-col p-2 xl:items-start fixed h-full xl:ml-24 ">
       {/* Twitter logo */}
       <div className="hoverEffect  hover:bg-blue-100 xl:px-2 xl:ml-2">
-        <Image src={twitter} alt="Twitter Img" width={32} height={32} />
+        <Image src={twitter} alt="Twitter Img" width={32} height={32}  />
       </div>
       {/* MenuItems */}
       <div className=" mt-4 mb-2.5 xl:items-start">
@@ -58,6 +58,7 @@ export const Sidebar = () => {
               height={50}
               className="rounded-full h-10 w-10 xl:mr-2"
               alt="profile-img"
+             
             />
             <div className="leading-5 hidden xl:inline">
               <h3 className="font-bold">

@@ -8,7 +8,7 @@ export const News = ({ article }) => {
             {article.source.name}
           </p>
         </div>
-        <img width={70} className="rounded-xl" src={article.urlToImage} alt="url-img" />
+        <img width={70} className="rounded-xl" src={article.urlToImage} alt="url-img"   />
       </div>
     </a>
   );

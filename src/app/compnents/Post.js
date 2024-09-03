@@ -17,16 +17,17 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { db, storage } from "../../../firebase";
-import { useSession } from "next-auth/react";
+import { useSession,signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
-import { modelState } from "../../../atom/modalState";
+import { modelState, postIdState } from "../../../atom/atomModal";
 
 export const Post = ({ post }) => {
   const { data: session } = useSession();
 
   const [open, setOpen] = useRecoilState(modelState);
+  const [postId, setPostId] = useRecoilState(postIdState);
   const [likes, setLikes] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
 
@@ -72,6 +73,7 @@ export const Post = ({ post }) => {
         height={100}
         className="h-11 w-11 rounded-full mr-4"
         alt="user-image"
+     
       />
 
       <div className="flex-1">
@@ -104,13 +106,21 @@ export const Post = ({ post }) => {
             height={500}
             className="rounded-2xl mr-2 h-auto w-auto"
             alt="post-image"
+          
           />
         )}
 
         {/* icons */}
         <div className="flex items-center justify-between text-gray-500 p-2">
           <ChatBubbleOvalLeftEllipsisIcon
-            onClick={() => setOpen(!open)}
+            onClick={() => {
+              if (!session) {
+                signIn();
+              } else {
+                setOpen(!open);
+                setPostId(post.id);
+              }
+            }}
             className="h-9 w-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100  "
           />
           {session?.user.uid === post?.data().id && (

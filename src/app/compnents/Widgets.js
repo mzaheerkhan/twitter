@@ -61,6 +61,7 @@ export const Widgets = ({ newsResults, randomUsers }) => {
                   width="40"
                   src={randomUser.picture.thumbnail}
                   alt=""
+               
                 />
                 <div className="truncate ml-4 leading-5">
                   <h4 className="font-bold hover:underline text-[14px] truncate">
