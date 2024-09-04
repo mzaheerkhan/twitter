@@ -11,27 +11,50 @@ import {
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { db } from "../../../firebase";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  serverTimestamp,
+} from "firebase/firestore";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+
 export const CommentModal = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [open, setOpen] = useRecoilState(modelState);
   const [postId] = useRecoilState(postIdState);
   const [post, setPost] = useState({});
   const [input, setInput] = useState("");
-
-  const { data: session } = useSession();
+ 
 
   useEffect(() => {
-    onSnapshot(doc(db, "posts", postId), (snapshot) => {
-      setPost(snapshot);
-    });
+      onSnapshot(doc(db, "posts", postId), (snapshot) => {
+        setPost(snapshot);
+      });
+    
   }, [postId, db]);
 
-  const sendComment = () => {};
+  const sendComment = async () => {
+   
+      await addDoc(collection(db, "posts", postId, "comments"), {
+        comment: input,
+        name: session.user.name,
+        username: session.user.username,
+        userImg: session.user.image,
+        timestamp: serverTimestamp(),
+      });
+      setOpen(false);
+      setInput("");
+      router.push(`posts/${postId}`);
+    
+  };
 
   return (
     <div>
-      {open && (
+      {open &&  (
         <Modal
           isOpen={open}
           onRequestClose={() => setOpen(false)}
@@ -72,7 +95,6 @@ export const CommentModal = () => {
 
             <div className="flex border-b border-gray-200 p-3 space-x-3">
               <Image
-                //onClick={signOut}
                 src={session.user?.image}
                 width={50}
                 height={50}
