@@ -28,33 +28,29 @@ export const CommentModal = () => {
   const [postId] = useRecoilState(postIdState);
   const [post, setPost] = useState({});
   const [input, setInput] = useState("");
- 
 
   useEffect(() => {
-      onSnapshot(doc(db, "posts", postId), (snapshot) => {
-        setPost(snapshot);
-      });
-    
+    onSnapshot(doc(db, "posts", postId), (snapshot) => {
+      setPost(snapshot);
+    });
   }, [postId, db]);
 
   const sendComment = async () => {
-   
-      await addDoc(collection(db, "posts", postId, "comments"), {
-        comment: input,
-        name: session.user.name,
-        username: session.user.username,
-        userImg: session.user.image,
-        timestamp: serverTimestamp(),
-      });
-      setOpen(false);
-      setInput("");
-      router.push(`posts/${postId}`);
-    
+    await addDoc(collection(db, "posts", postId, "comments"), {
+      comment: input,
+      name: session.user.name,
+      username: session.user.username,
+      userImg: session.user.image,
+      timestamp: serverTimestamp(),
+    });
+    setOpen(false);
+    setInput("");
+    router.push(`/posts/${postId}`);
   };
 
   return (
     <div>
-      {open &&  (
+      {open && (
         <Modal
           isOpen={open}
           onRequestClose={() => setOpen(false)}
@@ -120,12 +116,6 @@ export const CommentModal = () => {
                       onClick={() => filePickerRef.current.click()}
                     >
                       <PhotoIcon className="h-10 w-10 hoverEffect p-2 text-sky-500 hover:bg-sky-100" />
-                      {/* <input
-                        type="file"
-                        hidden
-                        ref={filePickerRef}
-                        onChange={addImageToPost}
-                      /> */}
                     </div>
                     <FaceSmileIcon className="h-10 hoverEffect p-2 text-sky-500 hover:bg-sky-100" />
                   </div>

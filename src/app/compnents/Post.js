@@ -16,17 +16,18 @@ import {
   deleteDoc,
   setDoc,
 } from "firebase/firestore";
- 
+
 import { db, storage } from "../../../firebase";
 import { useSession, signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
 import { modelState, postIdState } from "../../../atom/atomModal";
+import { useRouter } from "next/navigation";
 
-export const Post = ({ post }) => {
+export const Post = ({ post, id }) => {
+  const router = useRouter()
   const { data: session } = useSession();
- 
 
   const [open, setOpen] = useRecoilState(modelState);
   const [postId, setPostId] = useRecoilState(postIdState);
@@ -37,18 +38,18 @@ export const Post = ({ post }) => {
   {
     /* Funtion that creates comments doc in the firebase database */
   }
-  useEffect(
-    onSnapshot(collection(db, "posts", postId, "comments"), (snapshot) => {
-      setComments(snapshot.docs);
-    }),
-    [db, postId]
-  );
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "posts", id, "comments"),
+      (snapshot) => setComments(snapshot.docs)
+    );
+  }, [db]);
 
   {
     /* Funtion that creates likes doc in the firebase database */
   }
   useEffect(() => {
-    onSnapshot(collection(db, "posts", post.id, "likes"), (snapshot) =>
+    onSnapshot(collection(db, "posts", id, "likes"), (snapshot) =>
       setLikes(snapshot.docs)
     );
   }, [db]);
@@ -66,11 +67,9 @@ export const Post = ({ post }) => {
     async function likePost() {
       if (session) {
         if (hasLiked) {
-          await deleteDoc(
-            doc(db, "posts", post.id, "likes", session?.user.uid)
-          );
+          await deleteDoc(doc(db, "posts", id, "likes", session?.user.uid));
         } else {
-          await setDoc(doc(db, "posts", post.id, "likes", session?.user.uid), {
+          await setDoc(doc(db, "posts", id, "likes", session?.user.uid), {
             username: session.user.username,
           });
         }
@@ -80,16 +79,18 @@ export const Post = ({ post }) => {
     }
     const deletePost = async () => {
       if (window.confirm("Are you sure to delete this post?")) {
-        deleteDoc(doc(db, "posts", post.id));
+        deleteDoc(doc(db, "posts", id));
         if (post.data().image) {
-          deleteObject(ref(storage, `posts/${post.id}/image`));
+          deleteObject(ref(storage, `posts/${id}/image`));
         }
+        router.push("/")
       }
+     
     };
     return (
       <div className="flex p-3 cursor-pointer border-b border-gray-200">
         <Image
-          src={post.data().userImg}
+          src={post?.data().userImg}
           width={100}
           height={100}
           className="h-11 w-11 rounded-full mr-4"
@@ -102,10 +103,10 @@ export const Post = ({ post }) => {
             {/* post user info */}
             <div className="flex items-center space-x-1 whitespace-nowrap">
               <h4 className="font-bold text-[15px] sm:text-[16px] hover:underline">
-                {post.data().name}
+                {post?.data().name}
               </h4>
               <span className="text-sm sm:text-[15px]">
-                @{post.data().username} -{" "}
+                @{post?.data().username} -{" "}
               </span>
               <span className="text-sm sm:text-[15px] hover:underline">
                 <Moment fromNow>{post?.data().timestamp?.toDate()}</Moment>
@@ -116,12 +117,12 @@ export const Post = ({ post }) => {
           </div>
           {/* post text */}
           <p className="text-gray-800 text-[15px] sm:text-[16px] mb-2">
-            {post.data().text}
+            {post?.data().text}
           </p>
           {/* post img */}
           {post?.data().image && (
             <Image
-              src={post.data().image}
+              src={post?.data().image}
               width={500}
               height={500}
               className="rounded-2xl mr-2 h-auto w-auto"
@@ -138,16 +139,13 @@ export const Post = ({ post }) => {
                     signIn();
                   } else {
                     setOpen(!open);
-                    setPostId(post.id);
+                    setPostId(id);
                   }
                 }}
                 className="h-9 w-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100  "
               />
               {comments.length > 0 && (
-                <span className={"text-red-600 text-sm "}>
-                  {" "}
-                  {comments.length}
-                </span>
+                <span className="text-sm">{comments.length}</span>
               )}
             </div>
             {session?.user.uid === post?.data().id && (
