@@ -7,17 +7,35 @@ import { useRouter, useParams } from "next/navigation";
 import { Post } from "../../compnents/Post";
 import { useEffect, useState } from "react";
 import { db } from "../../../../firebase";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { Comments } from "../../compnents/Comments";
+import { comment } from "postcss";
 
 export default function PostPage() {
   const router = useRouter();
   const param = useParams();
   const id = param.id;
   const [post, setPost] = useState();
+  const [comments, setComments] = useState();
   const [newsResults, setNewsResults] = useState([]);
   const [randomUsers, setRandomUsers] = useState([]);
   useEffect(() => {
     onSnapshot(doc(db, "posts", id), (snapshot) => setPost(snapshot));
+  }, [db, id]);
+  useEffect(() => {
+    onSnapshot(
+      query(
+        collection(db, "posts", id, "comments"),
+        orderBy("timestamp", "desc")
+      ),
+      (snapshot) => setComments(snapshot.docs)
+    );
   }, [db, id]);
 
   useEffect(() => {
@@ -54,6 +72,18 @@ export default function PostPage() {
           <h2 className="text-lg sm:text-xl font-bold cursor-pointer">Home</h2>
         </div>
         <Post id={id} post={post} />
+        {comments && comments.length > 0 && (
+          <>
+            {comments.map((comment) => (
+              <Comments
+                key={comment.id}
+                commentId={comment.id}
+                originalPostId={id}
+                comment={comment.data()}
+              />
+            ))}
+          </>
+        )}
       </div>
       {/* Widgets */}
       <Widgets newsResults={newsResults} randomUsers={randomUsers} />

@@ -1,8 +1,3 @@
-"use client";
-import Image from "next/image";
-import Moment from "react-moment";
-import { useRecoilState } from "recoil";
-import { modelState, postIdState } from "../../../atom/atomModal";
 import Modal from "react-modal";
 import {
   XMarkIcon,
@@ -20,6 +15,10 @@ import {
 } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Moment from "react-moment";
+import { useRecoilState } from "recoil";
+import { modelState, postIdState } from "../../../atom/atomModal";
 
 export const CommentModal = () => {
   const { data: session } = useSession();
@@ -42,6 +41,7 @@ export const CommentModal = () => {
       username: session.user.username,
       userImg: session.user.image,
       timestamp: serverTimestamp(),
+      userId: session.user.uid,
     });
     setOpen(false);
     setInput("");
@@ -56,8 +56,10 @@ export const CommentModal = () => {
           onRequestClose={() => setOpen(false)}
           ariaHideApp={false}
           className="max-w-lg w-[90%] absolute top-24 left-[50%] translate-x-[-50%] bg-white border-1 border-gray-200 rounded-xl shadow-md"
+          // Set max-height and make modal scrollable
+          style={{ content: { maxHeight: "80vh", overflowY: "auto" } }}
         >
-          <div className="p-1 h-[300px] ">
+          <div className="p-1">
             <div className="border-b border-gray-200 py-1 px-1">
               <div className="hoverEffect h-10 w-10 flex items-center justify-center">
                 <XMarkIcon
@@ -67,7 +69,7 @@ export const CommentModal = () => {
               </div>
             </div>
             <div className="p-3 flex items-center space-x-1 whitespace-nowrap relative ">
-              <span className="bg-gray-300  w-0.5 h-full z-[-1] absolute left-8 top-11  " />
+              <span className="bg-gray-300 w-0.5 h-full z-[-1] absolute left-8 top-11" />
               <Image
                 src={post?.data()?.userImg}
                 width={100}
@@ -99,22 +101,21 @@ export const CommentModal = () => {
               />
 
               <div className="w-full divide-y divide-gray-200">
-                <div className=" ">
+                <div>
+                  {/* Constrain the textarea height */}
                   <textarea
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Tweet your reply"
                     rows={2}
-                    className="w-full  border-none focus:ring-0 text-lg placeholder-gray-700 tracking-wide min-h-[50px] text-gray-700 "
-                  ></textarea>
+                    style={{ maxHeight: "150px", overflowY: "auto" }}
+                    className="w-full border-none focus:ring-0 text-lg placeholder-gray-700 tracking-wide min-h-[50px] text-gray-700"
+                  />
                 </div>
 
                 <div className="flex items-center justify-between pt-2.5">
                   <div className="flex">
-                    <div
-                      className=""
-                      onClick={() => filePickerRef.current.click()}
-                    >
+                    <div onClick={() => filePickerRef.current.click()}>
                       <PhotoIcon className="h-10 w-10 hoverEffect p-2 text-sky-500 hover:bg-sky-100" />
                     </div>
                     <FaceSmileIcon className="h-10 hoverEffect p-2 text-sky-500 hover:bg-sky-100" />
@@ -122,7 +123,7 @@ export const CommentModal = () => {
                   <button
                     onClick={sendComment}
                     disabled={!input?.trim()}
-                    className="bg-blue-400 text-white px-4 pu-1.5 rounded-full font-bold shadow-md hover:brightness-95  disabled:opacity-50"
+                    className="bg-blue-400 text-white px-4 py-1.5 rounded-full font-bold shadow-md hover:brightness-95 disabled:opacity-50"
                   >
                     Reply
                   </button>
