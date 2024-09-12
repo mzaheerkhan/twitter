@@ -31,7 +31,7 @@ export default function SignInPage() {
         />
         <div className="">
           {Object.values(providers).map((provider) => (
-            <div className="flex flex-col items-center">
+            <div key={provider.name} className="flex flex-col items-center">
               <img
                 className="w-20 object-cover"
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTl6PFlBBSev_Aj-u7I-PS05rSGYVsA1cO9Q&s"
