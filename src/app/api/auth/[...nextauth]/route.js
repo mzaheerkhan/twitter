@@ -6,6 +6,7 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorizationUrl: "https://accounts.google.com/o/oauth2/auth?scope=email%20profile&response_type=code&redirect_uri=https://twitter-smoky-gamma.vercel.app/api/auth/callback/google",
     }),
   ],
   pages: {
