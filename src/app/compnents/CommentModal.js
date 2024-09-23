@@ -14,15 +14,15 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Moment from "react-moment";
 import { useRecoilState } from "recoil";
 import { modelState, postIdState } from "../../../atom/atomModal";
+import { userModal } from "../../../atom/userAtom";
 
 export const CommentModal = () => {
-  const { data: session } = useSession();
   const router = useRouter();
+  const [currentUser] = useRecoilState(userModal);
   const [open, setOpen] = useRecoilState(modelState);
   const [postId] = useRecoilState(postIdState);
   const [post, setPost] = useState({});
@@ -37,11 +37,11 @@ export const CommentModal = () => {
   const sendComment = async () => {
     await addDoc(collection(db, "posts", postId, "comments"), {
       comment: input,
-      name: session.user.name,
-      username: session.user.username,
-      userImg: session.user.image,
+      name: currentUser.name,
+      username: currentUser.username,
+      userImg: currentUser.userImg,
       timestamp: serverTimestamp(),
-      userId: session.user.uid,
+      userId: currentUser.uid,
     });
     setOpen(false);
     setInput("");
@@ -93,7 +93,7 @@ export const CommentModal = () => {
 
             <div className="flex border-b border-gray-200 p-3 space-x-3">
               <Image
-                src={session.user?.image}
+                src={currentUser?.userImg}
                 width={50}
                 height={50}
                 alt="profile-img"

@@ -19,11 +19,9 @@ import { db, storage } from "../../../firebase";
 import { useRecoilState } from "recoil";
 import { userModal } from "../../../atom/userAtom";
 import { signOut, getAuth } from "firebase/auth";
-
-export const Input = () => {
+export default function Input() {
   const [input, setInput] = useState("");
-  const [currentUser, setCurrentUser] = useRecoilState(userModal);
-  console.log("currentUserFormAtom:", currentUser);
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const filePickerRef = useRef(null);
@@ -73,37 +71,36 @@ export const Input = () => {
     signOut(auth);
     setCurrentUser(null);
   }
+
   return (
     <>
       {currentUser && (
-        <div className="flex border-b border-gray-200 p-3 space-x-3">
+        <div className="flex  border-b border-gray-200 p-3 space-x-3">
           <img
             onClick={onSignOut}
             src={currentUser?.userImg}
             alt="user-img"
             className="h-11 w-11 rounded-full cursor-pointer hover:brightness-95"
           />
-
           <div className="w-full divide-y divide-gray-200">
-            <div className=" ">
+            <div className="">
               <textarea
+                className="w-full border-none focus:ring-0 text-lg placeholder-gray-700 tracking-wide min-h-[50px] text-gray-700"
+                rows="2"
+                placeholder="What's happening?"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="What's happening?"
-                rows={2}
-                className="w-full  border-none focus:ring-0 text-lg placeholder-gray-700 tracking-wide min-h-[50px] text-gray-700 "
               ></textarea>
             </div>
             {selectedFile && (
               <div className="relative">
-                <XMarkIcon
+                <XIcon
                   onClick={() => setSelectedFile(null)}
-                  className="h-7 text-black absolute cursor-pointer shadow-md border border-white m-1 rounded-full"
+                  className="border h-7 text-black absolute cursor-pointer shadow-md border-white m-1 rounded-full"
                 />
                 <img
                   src={selectedFile}
-                  className={`${loading && "animate-pulse"  }`}
-                  alt="Selected file preview"
+                  className={`${loading && "animate-pulse"}`}
                 />
               </div>
             )}
@@ -115,7 +112,7 @@ export const Input = () => {
                       className=""
                       onClick={() => filePickerRef.current.click()}
                     >
-                      <PhotoIcon className="h-10 w-10 hoverEffect p-2 text-sky-500 hover:bg-sky-100" />
+                      <PhotographIcon className="h-10 w-10 hoverEffect p-2 text-sky-500 hover:bg-sky-100" />
                       <input
                         type="file"
                         hidden
@@ -123,12 +120,12 @@ export const Input = () => {
                         onChange={addImageToPost}
                       />
                     </div>
-                    <FaceSmileIcon className="h-10 hoverEffect p-2 text-sky-500 hover:bg-sky-100" />
+                    <EmojiHappyIcon className="h-10 w-10 hoverEffect p-2 text-sky-500 hover:bg-sky-100" />
                   </div>
                   <button
                     onClick={sendPost}
-                    disabled={!input?.trim()}
-                    className="bg-blue-400 text-white px-4 pu-1.5 rounded-full font-bold shadow-md hover:brightness-95  disabled:opacity-50"
+                    disabled={!input.trim()}
+                    className="bg-blue-400 text-white px-4 py-1.5 rounded-full font-bold shadow-md hover:brightness-95 disabled:opacity-50"
                   >
                     Tweet
                   </button>
@@ -140,4 +137,4 @@ export const Input = () => {
       )}
     </>
   );
-};
+}

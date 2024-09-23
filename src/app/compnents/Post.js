@@ -18,22 +18,23 @@ import {
 } from "firebase/firestore";
 
 import { db, storage } from "../../../firebase";
-import { useSession, signIn } from "next-auth/react";
+
 import { useState, useEffect } from "react";
 import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
 import { modelState, postIdState } from "../../../atom/atomModal";
 import { useRouter } from "next/navigation";
+import { userModal } from "../../../atom/userAtom";
 
 export const Post = ({ post, id }) => {
   const router = useRouter();
-  const { data: session } = useSession();
 
   const [open, setOpen] = useRecoilState(modelState);
   const [postId, setPostId] = useRecoilState(postIdState);
   const [likes, setLikes] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
   const [comments, setComments] = useState([]);
+  const [currentUser, setCurrentUser] = useRecoilState(userModal);
 
   {
     /* Funtion that creates comments doc in the firebase database */
@@ -58,23 +59,21 @@ export const Post = ({ post, id }) => {
     /* Funtion that set the likes doc in the firebase database */
   }
   useEffect(() => {
-    setHasLiked(
-      likes.findIndex((like) => like.id === session?.user.uid) !== -1
-    );
-  }, [likes]);
+    setHasLiked(likes.findIndex((like) => like.id === currentUser?.uid) !== -1);
+  }, [likes, currentUser]);
 
   {
     async function likePost() {
-      if (session) {
+      if (currentUser) {
         if (hasLiked) {
-          await deleteDoc(doc(db, "posts", id, "likes", session?.user.uid));
+          await deleteDoc(doc(db, "posts", id, "likes", currentUser?.uid));
         } else {
-          await setDoc(doc(db, "posts", id, "likes", session?.user.uid), {
-            username: session.user.username,
+          await setDoc(doc(db, "posts", id, "likes", currentUser?.uid), {
+            username: currentUser?.username,
           });
         }
       } else {
-        signIn();
+        router.push("/auth/signin");
       }
     }
     const deletePost = async () => {
@@ -138,8 +137,8 @@ export const Post = ({ post, id }) => {
             <div className="flex items-center justify-center">
               <ChatBubbleOvalLeftEllipsisIcon
                 onClick={() => {
-                  if (!session) {
-                    signIn();
+                  if (!currentUser) {
+                    router.push("/auth/signin");
                   } else {
                     setOpen(!open);
                     setPostId(id);
@@ -151,7 +150,7 @@ export const Post = ({ post, id }) => {
                 <span className="text-sm">{comments.length}</span>
               )}
             </div>
-            {session?.user.uid === post?.data().id && (
+            {currentUser?.uid === post?.data().id && (
               <TrashIcon
                 onClick={deletePost}
                 className="h-9 w-9 hoverEffect p-2 hover:red-sky-600 hover:bg-red-100"
