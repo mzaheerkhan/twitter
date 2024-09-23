@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+
 import {
   PhotoIcon,
   FaceSmileIcon,
@@ -23,7 +23,6 @@ import { signOut, getAuth } from "firebase/auth";
 export const Input = () => {
   const [input, setInput] = useState("");
   const [currentUser, setCurrentUser] = useRecoilState(userModal);
-  console.log("currentUserFormAtom:", currentUser);
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const filePickerRef = useRef(null);
