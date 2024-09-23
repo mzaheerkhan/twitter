@@ -30,15 +30,12 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen mx-auto ">
+    <main className="flex min-h-screen  mx-auto  max-w-[1700px]">
       {/* Sidebar */}
       <Sidebar />
-
       <Feed />
-
       {/* Widgets */}
       <Widgets newsResults={newsResults} randomUsers={randomUsers} />
-
       {/* Modal*/}
       <CommentModal />
     </main>

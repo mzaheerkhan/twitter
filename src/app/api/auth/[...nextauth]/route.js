@@ -15,13 +15,17 @@ export const authOptions = {
     async session({ session, token }) {
       // Convert user.name to lowercase and remove spaces
       if (session.user && session.user.name) {
-        session.user.username = session.user.name.split(" ").join("").toLowerCase();
+        session.user.username = session.user.name
+          .split(" ")
+          .join("")
+          .toLowerCase();
       }
       // Add uid to session
       session.user.uid = token.sub;
       return session;
-    }
-  }
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET, // Add your secret here
 };
 
 const handler = NextAuth(authOptions);
